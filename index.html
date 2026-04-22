@@ -368,15 +368,15 @@
                 { Platform: "Instagram", Url: "https://instagram.com", IconClass: "fab fa-instagram", ColorClass: "text-pink-600 dark:text-pink-400", Visible: "true" }
             ],
             apps: [
-                { ID: "app1", Type: "link", Name: "AI Image Studio", Description: "Generate gambar Neumorphic", Category: "AI Tools", Url: "https://example.com/ai", IconClass: "fas fa-wand-magic-sparkles", ColorClass: "text-purple-600 dark:text-purple-400", Visible: "true", ClickCount: 2045, isLocked: false },
+                { ID: "app1", Type: "link", Name: "AI Image Studio", Description: "Generate gambar Neumorphic", Category: "AI Tools", Url: "https://example.com/ai", IconClass: "fas fa-wand-magic-sparkles", ColorClass: "text-purple-600 dark:text-purple-400", Visible: "true", ClickCount: 2045, isLocked: false, BadgeText: "HOT🔥", BadgeColor1: "#ec4899", BadgeColor2: "#8b5cf6", BadgeRatio: 50 },
                 { ID: "banner1", Type: "image", Name: "Promo Bundle AI", ImageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop", Url: "https://example.com/promo", Category: "Semua", Visible: "true", ClickCount: 0 },
                 { ID: "app2", Type: "link", Name: "Financial Tracker", Description: "Hitung aset dan investasi", Category: "Produktivitas", Url: "https://example.com/finance", IconClass: "fas fa-chart-pie", ColorClass: "text-emerald-600 dark:text-emerald-400", Visible: "true", ClickCount: 890, isLocked: false },
-                { ID: "app3", Type: "link", Name: "Private Blueprint", Description: "Strategi digital eksklusif", Category: "Premium", Url: "https://example.com/premium", IconClass: "fas fa-gem", ColorClass: "text-amber-500", Visible: "true", ClickCount: 120, isLocked: true, PasswordSourceUrl: "https://wa.me/628123456789", Password: "admin" },
+                { ID: "app3", Type: "link", Name: "Private Blueprint", Description: "Strategi digital eksklusif", Category: "Premium", Url: "https://example.com/premium", IconClass: "fas fa-gem", ColorClass: "text-amber-500", Visible: "true", ClickCount: 120, isLocked: true, PasswordSourceUrl: "https://wa.me/628123456789", Password: "admin", BadgeText: "PREMIUM", BadgeColor1: "#f59e0b", BadgeColor2: "#d97706", BadgeRatio: 50 },
                 { ID: "app4", Type: "link", Name: "Mentoring 1-on-1", Description: "Jadwalkan sesi privat", Category: "Produktivitas", Url: "https://example.com/jadwal", IconClass: "fas fa-calendar-check", ColorClass: "text-blue-600 dark:text-blue-400", Visible: "true", ClickCount: 340, isLocked: false },
                 { ID: "app5", Type: "link", Name: "Video Editing Asset", Description: "Kumpulan template & preset", Category: "Premium", Url: "https://example.com/video", IconClass: "fas fa-video", ColorClass: "text-red-500", Visible: "true", ClickCount: 150, isLocked: false },
                 { ID: "app6", Type: "link", Name: "Ebook Copywriting", Description: "Panduan menulis iklan", Category: "Edukasi", Url: "https://example.com/ebook", IconClass: "fas fa-book", ColorClass: "text-blue-500", Visible: "true", ClickCount: 420, isLocked: false },
                 { ID: "app7", Type: "link", Name: "Kalkulator Ads", Description: "Hitung ROAS dan profit", Category: "Produktivitas", Url: "https://example.com/calc", IconClass: "fas fa-calculator", ColorClass: "text-orange-500", Visible: "true", ClickCount: 65, isLocked: false },
-                { ID: "app8", Type: "link", Name: "Canva Templates", Description: "100+ desain IG Carousel", Category: "Edukasi", Url: "https://example.com/canva", IconClass: "fas fa-image", ColorClass: "text-teal-500", Visible: "true", ClickCount: 500, isLocked: false },
+                { ID: "app8", Type: "link", Name: "Canva Templates", Description: "100+ desain IG Carousel", Category: "Edukasi", Url: "https://example.com/canva", IconClass: "fas fa-image", ColorClass: "text-teal-500", Visible: "true", ClickCount: 500, isLocked: false, BadgeText: "SALE", BadgeColor1: "#10b981", BadgeColor2: "#3b82f6", BadgeRatio: 70 },
                 { ID: "app9", Type: "link", Name: "Discord Komunitas", Description: "Join grup rahasia", Category: "Semua", Url: "https://example.com/discord", IconClass: "fab fa-discord", ColorClass: "text-indigo-500", Visible: "true", ClickCount: 1200, isLocked: false },
                 { ID: "app10", Type: "link", Name: "Rahasia FYP TikTok", Description: "Webinar Replay", Category: "Premium", Url: "https://example.com/tiktok", IconClass: "fas fa-play-circle", ColorClass: "text-pink-500", Visible: "true", ClickCount: 89, isLocked: true, PasswordSourceUrl: "https://wa.me/628123456789", Password: "123" }
             ]
@@ -612,6 +612,26 @@
                      link.addEventListener('click', () => incrementAppClick(app.ID));
                 }
 
+                // --- LOGIKA BADGE DINAMIS ---
+                let customBadge = '';
+                // Cek jika pengguna mengisi BadgeText dari Google Sheets (Dashboard)
+                if (app.BadgeText && String(app.BadgeText).trim() !== '') {
+                    const c1 = app.BadgeColor1 || '#ec4899'; // Default pink
+                    const c2 = app.BadgeColor2 || '#8b5cf6'; // Default ungu
+                    const ratio = app.BadgeRatio || '50';
+                    
+                    // Merakit style gradasi dinamis
+                    const bgStyle = `background: linear-gradient(135deg, ${c1} ${ratio}%, ${c2} 100%); color: white;`;
+                    
+                    customBadge = `<div class="absolute top-0 right-0 rounded-bl-xl rounded-tr-[1.5rem] px-3 py-1 text-[10px] font-extrabold tracking-wider uppercase shadow-lg border-b border-l border-white/20 z-10" style="${bgStyle}">${app.BadgeText}</div>`;
+                } else {
+                    // Fallback ke sistem Badge 'HOT' otomatis jika BadgeText kosong tapi kliknya banyak
+                    const isPopular = (app.ClickCount || 0) > 1000;
+                    if (isPopular) {
+                        customBadge = `<div class="absolute top-0 right-0 glass rounded-bl-xl rounded-tr-[1.5rem] px-3 py-1 text-[9px] font-bold text-red-500 uppercase border-t-0 border-r-0"><i class="fas fa-fire mr-1"></i>Hot</div>`;
+                    }
+                }
+
                 if (itemType.toLowerCase() === 'image') {
                     link.className = `block w-full tap-effect rounded-[1.5rem] overflow-hidden relative group cursor-pointer animate-stagger shadow-md glass p-1`;
                     link.style.animationDelay = `${0.1 + (index * 0.05)}s`; 
@@ -627,14 +647,11 @@
                     link.style.animationDelay = `${0.1 + (index * 0.05)}s`; 
 
                     const lockIcon = isLocked ? `<i class="fas fa-lock text-[10px] ml-2 opacity-50"></i>` : '';
-                    const isPopular = (app.ClickCount || 0) > 1000;
                     const iconColor = app.ColorClass || '';
-                    
-                    const popularBadge = isPopular ? `<div class="absolute top-0 right-0 glass rounded-bl-xl rounded-tr-[1.5rem] px-3 py-1 text-[9px] font-bold text-red-500 uppercase border-t-0 border-r-0"><i class="fas fa-fire mr-1"></i>Hot</div>` : '';
 
                     link.innerHTML = `
-                        ${popularBadge}
-                        <div class="flex items-center gap-4 w-full">
+                        ${customBadge}
+                        <div class="flex items-center gap-4 w-full relative z-0">
                             <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.2rem] glass-input flex items-center justify-center ${iconColor} text-xl md:text-3xl group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/40">
                                 <i class="${app.IconClass}"></i>
                             </div>
